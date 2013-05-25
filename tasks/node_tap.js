@@ -1,5 +1,6 @@
 'use strict';
-var spawn = require('child_process').spawn;
+var tapConsumer = require('tap').createConsumer;
+var childProcess = require('child_process').spawn;
 
 module.exports = function (grunt) {
 	var async = grunt.util.async;
@@ -8,52 +9,27 @@ module.exports = function (grunt) {
 		var done = this.async();
 
 		async.forEach(this.files, function (filePair, fCb) {
-			async.forEach(filePair.src, runTests, fCb);
+			async.forEach(filePair.src, runTap, fCb);
 		}, function (err) {
 			done();
 		});
 	});
 
-	var tapOutput;
-
-	function runTests(src, cb) {
-		async.series([
-			wrapWithCb(runTap, src),
-			wrapWithCb(parseTapOutput),
-		], cb);
-	}
-
 	function runTap(src, cb) {
-		tapOutput = '';
-		var errors = '';
+		var tc = new tapConsumer();
+		var results = [];
+		tc.on('end', function (data, amtTests, testsPassed) {
+			results.push(tc.results);
+		});
 
-		var tapProcess = spawn('tap', ['--tap', src]);
-		tapProcess.stdout.setEncoding('utf8');
+		var tapProcess = childProcess('tap', ['--tap', src]);
 		tapProcess.stderr.setEncoding('utf8');
+		tapProcess.stdout.pipe(tc);
 
-		tapProcess.stdout.on('data', function (d) {
-			tapOutput += d;
-		});
-		tapProcess.stderr.on('data', function (d) {
-			errors += d;
-		});
 		tapProcess.on('close', function (code) {
-			cb(errors);
+			console.log(results);
+			cb();
 		});
-	}
-
-	function parseTapOutput(cb) {
-		console.log('parseTapOutput', tapOutput);
-		cb();
-	}
-
-	function wrapWithCb(fn) {
-		var args = Array.prototype.slice.call(arguments);
-		var fn = args.shift();
-
-		return function (cb) {
-			fn.apply(null, args.concat(cb));
-		};
 	}
 
 };

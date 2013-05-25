@@ -1,8 +1,6 @@
 'use strict';
 
 module.exports = function (grunt) {
-
-	// Project configuration.
 	grunt.initConfig({
 		jshint: {
 			all: [
@@ -25,16 +23,10 @@ module.exports = function (grunt) {
 			default_options: {
 				options: {},
 				files: {
-					'tests': ['./test/tap/tests.js']
+					'tests': ['./test/*.js']
 				}
 			}
-		},
-
-		// Unit tests.
-		nodeunit: {
-			tests: ['test/*_test.js']
 		}
-
 	});
 
 	// Actually load this plugin's task(s).
