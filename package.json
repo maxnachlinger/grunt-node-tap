@@ -25,7 +25,7 @@
 		"node": ">= 0.8.0"
 	},
 	"scripts": {
-		"test": "tap ./test/tests.js"
+		"test": "tap ./test/nodeTapTests.js"
 	},
 	"devDependencies": {
 		"grunt-contrib-jshint": "~0.1.1",

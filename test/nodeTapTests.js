@@ -40,8 +40,8 @@ test("Handles N node-tap test files", function (t) {
 });
 
 function givenFilePaths(paths, cb) {
-	var node_tap = require('../lib/node_tap.js');
-	node_tap({
+	var nodeTap = require('../lib/nodeTap.js');
+	nodeTap({
 		grunt: grunt,
 		filePaths: paths
 	}, cb);
