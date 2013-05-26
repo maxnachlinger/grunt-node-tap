@@ -55,9 +55,8 @@ module.exports = function (grunt) {
 		}
 
 		function gatherFiles() {
-			return _(self.files)
-				.pluck('src')
-				.map(grunt.file.expand)
+			return _(self.filesSrc)
+				.map(utils.unary(grunt.file.expand))
 				.flatten()
 				.filter(utils.unary(grunt.file.exists))
 				.valueOf();
