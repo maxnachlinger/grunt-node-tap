@@ -33,3 +33,10 @@ test('noArgs does not apply arguments', function (t) {
 	};
 	utils.noArgs(fx)(1, 2);
 });
+
+test('getProperty gets requested object property', function (t) {
+	var o = {name: 'Test'};
+	var name = utils.getProperty('name')(o);
+	t.equal(name, 'Test', 'Fetches the requested property');
+	t.end();
+});

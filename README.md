@@ -42,3 +42,6 @@ A string value that is used to control the output. Here are some fun screen-shot
 
 #### options.outputLevel: failures
 ![failures outputMode](https://raw.github.com/maxnachlinger/grunt-node-tap/master/doc/failures.png)
+
+#### options.outputLevel: tap
+![failures outputMode](https://raw.github.com/maxnachlinger/grunt-node-tap/master/doc/tap.png)

@@ -13,10 +13,14 @@ module.exports = function (grunt) {
 			}
 		},
 
+		clean: {
+			tests: ['tmp']
+		},
+
 		node_tap: {
 			default_options: {
 				options: {
-					outputLevel: 'failures' // failures, stats
+					outputLevel: 'tap' // failures, stats, tap
 				},
 				files: {
 					'tests': ['./test/data/mixed.js']
@@ -30,9 +34,10 @@ module.exports = function (grunt) {
 
 	// These plugins provide necessary tasks.
 	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks('grunt-contrib-clean');
 
 	// By default, lint and run all tests.
 	grunt.registerTask('default', ['jshint']);
 
-	grunt.registerTask('dev', ['node_tap']);
+	grunt.registerTask('dev', ['node_tap', 'clean']);
 };
