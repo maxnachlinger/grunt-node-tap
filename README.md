@@ -9,7 +9,7 @@ npm install grunt-node-tap --save-dev
 ```
 
 One the plugin has been installed, it may be enabled inside your Gruntfile with this line of JavaScript: 
-```js
+```js
 grunt.loadNpmTasks('grunt-node-tap');
 ```
 
@@ -35,9 +35,10 @@ grunt.initConfig({
 Type: `String`
 Default value: `'failures'`
 
-A string value that is used to control the output. Here are some fun screenshots.
-#### stats
-![Image](https://raw.github.com/maxnachlinger/grunt-node-tap/master/doc/stats.png?raw=true)
-#### failures
-![Image](https://raw.github.com/maxnachlinger/grunt-node-tap/master/doc/failures.png?raw=true)
+A string value that is used to control the output. Here are some fun screen-shots.
 
+#### stats
+![stats outputMode](/doc/stats.png)
+
+#### failures
+![failures outputMode](/doc/failures.png)
