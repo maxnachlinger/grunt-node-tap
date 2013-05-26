@@ -35,25 +35,21 @@ grunt.initConfig({
 
 ### Options
 
-#### options.separator
+#### options.outputLevel
 Type: `String`
-Default value: `',  '`
+Default value: `'failures'`
 
-A string value that is used to do something with whatever.
-
-#### options.punctuation
-Type: `String`
-Default value: `'.'`
-
-A string value that is used to do something else with whatever else.
+A string value that is used to control the output.
 
 ### Usage Examples
 
 ```js
 grunt.initConfig({
-  	node_tap: {
+		node_tap: {
 			default_options: {
-				options: {},
+				options: {
+					outputLevel: 'failures' // silent, failures, stats
+				},
 				files: {
 					'tests': ['./test/data/*.js']
 				}
@@ -61,9 +57,3 @@ grunt.initConfig({
 		}
 })
 ```
-
-## Contributing
-In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
-
-## Release History
-_(Nothing yet)_
