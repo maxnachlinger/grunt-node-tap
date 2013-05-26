@@ -38,7 +38,7 @@ Default value: `'failures'`
 A string value that is used to control the output. Here are some fun screen-shots.
 
 #### stats
-![stats outputMode](/doc/stats.png)
+![stats outputMode](https://raw.github.com/maxnachlinger/grunt-node-tap/master/doc/stats.png)
 
 #### failures
-![failures outputMode](/doc/failures.png)
+![failures outputMode](https://raw.github.com/maxnachlinger/grunt-node-tap/master/doc/failures.png)
