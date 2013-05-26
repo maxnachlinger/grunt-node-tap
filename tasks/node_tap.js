@@ -1,5 +1,6 @@
 'use strict';
 var node_tap = require('../lib/nodeTap.js');
+var path = require('path');
 var utils = require('../lib/utils.js');
 var util = require('util');
 var _ = require('lodash');
@@ -32,6 +33,10 @@ module.exports = function (grunt) {
 
 			var output = outputCreator[options.outputLevel](result);
 
+			if(options.outputTo) {
+				grunt.file.write(options.outputTo, output);
+			}
+
 			if (!result.testsPassed) {
 				return grunt.warn(output + lf);
 			}
@@ -43,8 +48,16 @@ module.exports = function (grunt) {
 		function checkOptions() {
 			var levels = outputCreator.outputLevels;
 			if (!~levels.indexOf(options.outputLevel)) {
-				return grunt.fail.fatal("Invalid option [" + options.outputLevel + "] passed, valid options are: [" +
-					levels.join(", ") + "]", exitCodes.fatal);
+				return grunt.fail.fatal("Invalid outputLevel option [" + options.outputLevel + "] passed, valid outputLevel " +
+					"options are: [" + levels.join(", ") + "]", exitCodes.fatal);
+			}
+			if(!options.outputTo) {
+				return;
+			}
+
+			if(!grunt.file.exists(options.outputTo)) {
+				return grunt.fail.fatal("Invalid path provided as outputTo option, the path [" + options.outputTo + "] " +
+					"does not exist", exitCodes.fatal);
 			}
 		}
 
