@@ -11,15 +11,16 @@ var exitCodes = {
 
 module.exports = function (grunt) {
 	grunt.registerMultiTask('node_tap', 'A Grunt task to run node-tap tests and read their output.', function () {
-		var outputWriter = {
+		var outputCreators = {
 			silent: function () {
 			},
-			failures: writeFailures,
-			verbose: writeVerboseOutput
+			failures: getFailuresOutput,
+			stats: getStatsOutput
 		};
 
 		var self = this;
 		var done = this.async();
+		var lf = grunt.util.linefeed;
 
 		var options = this.options();
 		checkOptions();
@@ -33,14 +34,19 @@ module.exports = function (grunt) {
 			grunt: grunt
 		}, function (err, result) {
 			if (err) {
-				return grunt.fail.fatal(err, exitCodes.fatal);
+				return grunt.fatal(err, exitCodes.fatal);
 			}
-			outputWriter[options.outputLevel](result);
+			var output = outputCreators[options.outputLevel](result);
+			if (!result.testsPassed) {
+				return grunt.warn(output + lf);
+			}
+
+			grunt.log.writeln(output);
 			done();
 		});
 
 		function checkOptions() {
-			var allowedLevels = _.keys(outputWriter);
+			var allowedLevels = _.keys(outputCreators);
 
 			if (!~allowedLevels.indexOf(options.outputLevel)) {
 				return grunt.fail.fatal("Invalid option [" + options.outputLevel + "] passed, valid options are: [" +
@@ -57,27 +63,31 @@ module.exports = function (grunt) {
 				.valueOf();
 		}
 
-		var lf = grunt.util.linefeed;
+		function getStatsOutput(result) {
+			var stats = { failed: 0, passed: 0, total: 0 };
 
-		function writeVerboseOutput(result) {
-			var str = lf + _.values(result.output).join(lf);
+			utils.arrayPick(result.results, 'passTotal', 'failTotal', 'testsTotal').forEach(function (res) {
+				stats.failed += res.failTotal;
+				stats.passed += res.passTotal;
+				stats.total += res.testsTotal;
+			});
 
-			if (result.testsPassed) {
-				return grunt.log.writeln("All tests passed" + str);
-			}
-			return grunt.fail.warn("Some tests failed" + str, exitCodes.taskFailed);
+			return "Passed: " + stats.passed + ", Failed: " + stats.failed + ", Total: " + stats.total;
 		}
 
-		function writeFailures(result) {
+		function getFailuresOutput(result) {
+			var str = getStatsOutput(result);
 			if (result.testsPassed) {
-				return;
+				return str;
 			}
+			str += lf + lf + "Failures:" + lf + lf;
 
-			var str = "Some tests failed: " + lf;
+			_(result.results).forEach(function (testFileResults, testsFile) {
+				if (testFileResults.failTotal === 0)
+					return;
+				str += testsFile + lf;
 
-			_(result.results).forEach(function (value, key) {
-				str += "Test Suite: " + key + lf;
-				_(value).reject('ok').map().forEach(function (resultObj) {
+				_(testFileResults.list).reject('ok').forEach(function (resultObj) {
 					resultObj = _.omit(resultObj, 'id', 'ok');
 					_(resultObj).forEach(function (resultValue, resultKey) {
 						str += resultKey + ':' + util.inspect(resultValue) + lf;
@@ -85,7 +95,7 @@ module.exports = function (grunt) {
 				});
 			});
 
-			return grunt.fail.warn(str, exitCodes.taskFailed);
+			return str;
 		}
 
 	});

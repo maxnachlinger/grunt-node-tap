@@ -16,7 +16,7 @@ module.exports = function (grunt) {
 		node_tap: {
 			default_options: {
 				options: {
-					outputLevel: 'verbose' // verbose, silent, failures
+					outputLevel: 'failures' // silent, failures, stats
 				},
 				files: {
 					'tests': ['./test/data/*.js']
