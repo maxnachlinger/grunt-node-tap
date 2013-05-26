@@ -35,4 +35,9 @@ grunt.initConfig({
 Type: `String`
 Default value: `'failures'`
 
-A string value that is used to control the output.
+A string value that is used to control the output. Here are some fun screenshots.
+#### stats
+![Image](../master/doc/stats.png?raw=true)
+#### failures
+![Image](../master/doc/failures.png?raw=true)
+
