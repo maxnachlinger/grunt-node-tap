@@ -30,8 +30,7 @@ module.exports = function (grunt) {
 			return grunt.fail.fatal("None of the files passed exist.", exitCodes.fatal);
 
 		node_tap({
-			filePaths: foundFiles,
-			grunt: grunt
+			filePaths: foundFiles
 		}, function (err, result) {
 			if (err) {
 				return grunt.fatal(err, exitCodes.fatal);
@@ -88,7 +87,7 @@ module.exports = function (grunt) {
 					_(resultObj).forEach(function (resultValue, resultKey) {
 						str += resultKey + ':' + util.inspect(resultValue) + lf;
 					});
-
+					str += lf;
 				});
 			});
 
