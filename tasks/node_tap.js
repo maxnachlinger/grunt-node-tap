@@ -12,8 +12,6 @@ var exitCodes = {
 module.exports = function (grunt) {
 	grunt.registerMultiTask('node_tap', 'A Grunt task to run node-tap tests and read their output.', function () {
 		var outputCreators = {
-			silent: function () {
-			},
 			failures: getFailuresOutput,
 			stats: getStatsOutput
 		};

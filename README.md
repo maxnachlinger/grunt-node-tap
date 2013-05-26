@@ -19,7 +19,7 @@ grunt.initConfig({
     node_tap: {
       default_options: {
         options: {
-          outputLevel: 'failures' // silent, failures, stats
+          outputLevel: 'failures' // failures, stats
         },
         files: {
           'tests': ['./test/data/*.js']
