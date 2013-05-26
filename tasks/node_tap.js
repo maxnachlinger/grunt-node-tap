@@ -63,15 +63,16 @@ module.exports = function (grunt) {
 		}
 
 		function getStatsOutput(result) {
-			var stats = { failed: 0, passed: 0, total: 0 };
+			var stats = { failTotal: 0, passTotal: 0, testsTotal: 0 };
 
-			utils.arrayPick(result.results, 'passTotal', 'failTotal', 'testsTotal').forEach(function (res) {
-				stats.failed += res.failTotal;
-				stats.passed += res.passTotal;
-				stats.total += res.testsTotal;
+			// pick the keys from stats out of the results, add the values to stats
+			_(utils.arrayPick(result.results, _.keys(stats))).forEach(function (res) {
+				_.forEach(res, function (resValue, resKey) {
+					stats[resKey] += resValue;
+				});
 			});
 
-			return "Passed: " + stats.passed + ", Failed: " + stats.failed + ", Total: " + stats.total;
+			return "Passed: " + stats.passTotal + ", Failed: " + stats.failTotal + ", Total: " + stats.testsTotal;
 		}
 
 		function getFailuresOutput(result) {
@@ -81,16 +82,13 @@ module.exports = function (grunt) {
 			}
 			str += lf + lf + "Failures:" + lf + lf;
 
-			_(result.results).forEach(function (testFileResults, testsFile) {
-				if (testFileResults.failTotal === 0)
-					return;
-				str += testsFile + lf;
-
+			_(result.results).reject('ok').each(function (testFileResults) {
 				_(testFileResults.list).reject('ok').forEach(function (resultObj) {
 					resultObj = _.omit(resultObj, 'id', 'ok');
 					_(resultObj).forEach(function (resultValue, resultKey) {
 						str += resultKey + ':' + util.inspect(resultValue) + lf;
 					});
+
 				});
 			});
 
