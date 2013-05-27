@@ -27,19 +27,16 @@ module.exports = function (grunt) {
 		node_tap({
 			filePaths: foundFiles
 		}, function (err, result) {
-			if (err) {
+			if (err)
 				return grunt.fatal(err, exitCodes.fatal);
-			}
 
 			var output = outputCreator[options.outputLevel](result);
 
-			if(options.outputTo) {
+			if(options.outputTo)
 				grunt.file.write(options.outputTo, output);
-			}
 
-			if (!result.testsPassed) {
+			if (!result.testsPassed)
 				return grunt.warn(output + lf);
-			}
 
 			grunt.log.writeln(output);
 			done();
@@ -50,14 +47,6 @@ module.exports = function (grunt) {
 			if (!~levels.indexOf(options.outputLevel)) {
 				return grunt.fail.fatal("Invalid outputLevel option [" + options.outputLevel + "] passed, valid outputLevel " +
 					"options are: [" + levels.join(", ") + "]", exitCodes.fatal);
-			}
-			if(!options.outputTo) {
-				return;
-			}
-
-			if(!grunt.file.exists(options.outputTo)) {
-				return grunt.fail.fatal("Invalid path provided as outputTo option, the path [" + options.outputTo + "] " +
-					"does not exist", exitCodes.fatal);
 			}
 		}
 
