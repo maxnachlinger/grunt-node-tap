@@ -25,12 +25,10 @@ module.exports = function (grunt) {
 				}
 			}
 		}
-	});n
+	});
 
 	grunt.loadTasks('tasks');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 
-	grunt.registerTask('default', ['jshint']);
-
-	grunt.registerTask('dev', ['node_tap']);
+	grunt.registerTask('default', ['jshint', 'node_tap']);
 };

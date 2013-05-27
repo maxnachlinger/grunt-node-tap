@@ -4,7 +4,7 @@ var path = require('path');
 var utils = require('../lib/utils.js');
 var util = require('util');
 var _ = require('lodash');
-var outputCreator = require('../lib/outputCreator.js')();
+var outputCreator = require('../lib/outputCreator.js');
 
 module.exports = function (grunt) {
 	var exitCodes = {
@@ -45,8 +45,8 @@ module.exports = function (grunt) {
 		function checkOptions() {
 			var levels = outputCreator.outputLevels;
 			if (!~levels.indexOf(options.outputLevel)) {
-				return grunt.fail.fatal("Invalid outputLevel option [" + options.outputLevel + "] passed, valid outputLevel " +
-					"options are: [" + levels.join(", ") + "]", exitCodes.fatal);
+				return grunt.fail.fatal(util.format("Invalid outputLevel option [%s] passed, valid outputLevel options " +
+					"are: [%s]", options.outputLevel, levels.join(", ")), exitCodes.fatal);
 			}
 		}
 
