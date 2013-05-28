@@ -15,13 +15,22 @@ module.exports = function (grunt) {
 		},
 
 		node_tap: {
-			default_options: {
+			dev: {
 				options: {
 					outputLevel: 'failures', // failures, stats, tap
 					outputTo: '/tmp/output.log' // empty, file-path
 				},
 				files: {
 					'tests': ['./test/data/*.js']
+				}
+			},
+
+			test: {
+				options: {
+					outputLevel: 'failures'
+				},
+				files: {
+					'tests': ['./test/*.js']
 				}
 			}
 		}
@@ -30,5 +39,6 @@ module.exports = function (grunt) {
 	grunt.loadTasks('tasks');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 
-	grunt.registerTask('default', ['jshint', 'node_tap']);
+	grunt.registerTask('default', ['jshint', 'node_tap:dev']);
+	grunt.registerTask('test', ['node_tap:test']);
 };

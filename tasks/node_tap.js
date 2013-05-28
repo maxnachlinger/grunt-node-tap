@@ -18,9 +18,12 @@ module.exports = function (grunt) {
 		var lf = grunt.util.linefeed;
 
 		var options = this.options();
+		grunt.log.verbose.writeflags(options);
 		checkOptions();
 
 		var foundFiles = gatherFiles();
+		grunt.log.verbose.writeln("Files to process:", foundFiles);
+
 		if (foundFiles.length === 0)
 			return grunt.fail.fatal("None of the files passed exist.", exitCodes.fatal);
 
