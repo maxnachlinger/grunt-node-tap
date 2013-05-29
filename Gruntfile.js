@@ -50,7 +50,7 @@ module.exports = function (grunt) {
 				files: {
 					'tests': ['./test/data/*.js']
 				}
-			},
+			}
 		}
 	});
 
