@@ -15,24 +15,42 @@ module.exports = function (grunt) {
 		},
 
 		node_tap: {
-			dev: {
+			failures_console: {
 				options: {
-					outputLevel: 'failures', // failures, stats, tap
-					outputTo: '/tmp/output.log' // empty, file-path
+					outputLevel: 'failures',
+					outputTo: 'console'
 				},
 				files: {
 					'tests': ['./test/data/*.js']
 				}
 			},
-
-			test: {
+			stats_console: {
 				options: {
-					outputLevel: 'failures'
+					outputLevel: 'stats',
+					outputTo: 'console'
 				},
 				files: {
-					'tests': ['./test/*.js']
+					'tests': ['./test/data/*.js']
 				}
-			}
+			},
+			tap_stream_console: {
+				options: {
+					outputLevel: 'tap-stream',
+					outputTo: 'console'
+				},
+				files: {
+					'tests': ['./test/data/*.js']
+				}
+			},
+			test: {
+				options: {
+					outputLevel: 'tap-stream', // failures, stats
+					outputTo: 'console' // or file path
+				},
+				files: {
+					'tests': ['./test/data/*.js']
+				}
+			},
 		}
 	});
 
@@ -40,5 +58,8 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 
 	grunt.registerTask('default', ['jshint', 'node_tap:test']);
-	grunt.registerTask('dev', ['node_tap:dev']);
+
+	grunt.registerTask('fc', ['node_tap:failures_console']);
+	grunt.registerTask('sc', ['node_tap:stats_console']);
+	grunt.registerTask('tc', ['node_tap:tap_stream_console']);
 };

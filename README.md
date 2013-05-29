@@ -19,8 +19,8 @@ grunt.initConfig({
     node_tap: {
       default_options: {
         options: {
-          outputLevel: 'failures', // failures, stats, tap,
-          outputTo: '/tmp/results.log' // ignored if not present or an empty string
+          outputLevel: 'failures', // failures, stats, tap-strea,,
+          outputTo: '/tmp/results.log' // console or file-path
         },
         files: {
           'tests': ['./test/data/*.js']
@@ -35,7 +35,7 @@ grunt.initConfig({
 #### options.outputLevel
 Type: `String`
 Default value: `'failures'`
-Allowable values: `'failures', 'stats', 'tap'`
+Allowable values: `'failures', 'stats', 'tap-stream'`
 
 A string value that is used to control the output. Here are some fun screen-shots.
 
@@ -45,11 +45,10 @@ A string value that is used to control the output. Here are some fun screen-shot
 #### options.outputLevel: failures
 ![failures outputMode](https://raw.github.com/maxnachlinger/grunt-node-tap/master/doc/failures.png)
 
-#### options.outputLevel: tap
-![failures outputMode](https://raw.github.com/maxnachlinger/grunt-node-tap/master/doc/tap.png)
+#### options.outputLevel: tap-stream
+![tap-stream outputMode](https://raw.github.com/maxnachlinger/grunt-node-tap/master/doc/tap.png)
 
 #### options.outputTo
 Type: `String`
-Default value: `''`
-Allowable values: `'', 'some/path/toFile.log'`
-
+Default value: `'console'`
+Allowable values: `'console', 'some/path/toFile.log'`

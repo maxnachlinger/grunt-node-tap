@@ -9,7 +9,7 @@ test("Handles failed node-tap tests", function (t) {
 		t.notOk(err, "No error was returned");
 		t.ok("A result was received");
 		t.notOk(res.testsPassed, "Some tests failed.");
-		t.ok(res.results, "Output was returned.");
+		t.ok(res.failedTests, "Output was returned.");
 		t.end();
 	});
 });
@@ -21,7 +21,7 @@ test("Handles passed node-tap tests", function (t) {
 		t.notOk(err, "No error was returned");
 		t.ok("A result was received");
 		t.ok(res.testsPassed, "All tests passed.");
-		t.ok(res.results, "Output was returned.");
+		t.ok(res.failedTests, "Output was returned.");
 		t.end();
 	});
 });
@@ -34,7 +34,7 @@ test("Handles N node-tap test files", function (t) {
 		t.notOk(err, "No error was returned");
 		t.ok("A result was received");
 		t.notOk(res.testsPassed, "Some tests failed.");
-		t.ok(res.results, "Output was returned.");
+		t.ok(res.failedTests, "Output was returned.");
 		t.end();
 	});
 });

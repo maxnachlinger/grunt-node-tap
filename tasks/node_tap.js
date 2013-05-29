@@ -16,34 +16,46 @@ module.exports = function (grunt) {
 		var self = this;
 		var done = this.async();
 		var lf = grunt.util.linefeed;
+		var output = '';
 
 		var options = this.options();
-		grunt.log.verbose.writeflags(options);
+		grunt.verbose.writeflags(options);
 		checkOptions();
 
 		var foundFiles = gatherFiles();
-		grunt.log.verbose.writeln("Files to process:", foundFiles);
+		grunt.verbose.writeln("Files to process:", foundFiles);
 
 		if (foundFiles.length === 0)
 			return grunt.fail.fatal("None of the files passed exist.", exitCodes.fatal);
 
-		node_tap({
+		var nodeTap = node_tap({
 			filePaths: foundFiles
 		}, function (err, result) {
 			if (err)
 				return grunt.fatal(err, exitCodes.fatal);
 
-			var output = outputCreator[options.outputLevel](result);
+			if(outputCreator[options.outputLevel])
+				output = outputCreator[options.outputLevel](result);
 
-			if(options.outputTo)
+			if(options.outputTo === 'file') {
 				grunt.file.write(options.outputTo, output);
+			} else {
+				if (!result.testsPassed)
+					return grunt.warn(output + lf);
 
-			if (!result.testsPassed)
-				return grunt.warn(output + lf);
-
-			grunt.log.writeln(output);
+				grunt.log.writeln(output);
+			}
 			done();
 		});
+
+		if(options.outputLevel === 'tap-stream') {
+			nodeTap.on('data', function(data) {
+				if(options.outputTo === 'console')
+					return grunt.log.writeln(util.inspect(data));
+
+				output += data + lf;
+			});
+		}
 
 		function checkOptions() {
 			var levels = outputCreator.outputLevels;
