@@ -19,7 +19,7 @@ grunt.initConfig({
     node_tap: {
       default_options: {
         options: {
-          outputLevel: 'failures', // failures, stats, tap-strea,,
+          outputLevel: 'failures', // failures, stats, tap-stream,
           outputTo: '/tmp/results.log' // console or file-path
         },
         files: {
