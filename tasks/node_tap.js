@@ -16,6 +16,7 @@ module.exports = function (grunt) {
 	grunt.registerMultiTask('node_tap', 'A Grunt task to run node-tap tests and read their output.', function () {
 		var self = this;
 		var done = this.async();
+		var async = grunt.util.async;
 
 		var options = this.options();
 		grunt.verbose.writeflags(options);
@@ -35,22 +36,20 @@ module.exports = function (grunt) {
 			tapOutput: ''
 		};
 
-		var tapConsumer = new TapConsumer();
-		setupTapConsumer();
-		runTests();
+		runTests(onTestsComplete);
 
 		function onTestsComplete(err) {
 			if (err)
 				return grunt.fatal(err, exitCodes.fatal);
 
 			var output;
-			if(resultToString[options.outputLevel])
+			if (resultToString[options.outputLevel])
 				output = resultToString[options.outputLevel](result);
 
-			if(!output)
+			if (!output)
 				output = result.tapOutput;
 
-			if(options.outputTo === 'file')
+			if (options.outputTo === 'file')
 				grunt.file.write(options.outputFilePath, output);
 			else
 				grunt.log.writeln(output);
@@ -61,43 +60,42 @@ module.exports = function (grunt) {
 			done();
 		}
 
-		function runTests() {
-			// run node-tap, --tap args output raw tap data
-			var args = ['--tap'].concat(foundFiles);
-			grunt.verbose.writeln("TAP args:", args);
+		function runTests(cb) {
+			async.forEach(foundFiles, function (file, eCb) {
+				var tapConsumer = new TapConsumer();
+				var proc = childProcess('node', [file]);
 
-			var tapProcess = childProcess('tap', args);
+				proc.stdout.pipe(tapConsumer);
+				proc.stderr.pipe(process.stderr);
 
-			tapProcess.on('close', utils.noArgs(onTestsComplete));
+				proc.on('close', eCb);
 
-			tapProcess.stderr.setEncoding('utf8');
-			tapProcess.stderr.on('data', onTestsComplete); // error, abort
+				tapConsumer.on('end', function () {
+					// write stats, the keys in result.stats are also present in tc.results
+					_.forEach(result.stats, function (val, key) {
+						result.stats[key] += tapConsumer.results[key];
+					});
 
-			tapProcess.stdout.pipe(tapConsumer);
-		}
+					if (tapConsumer.results.ok) return;
 
-		function setupTapConsumer() {
-			tapConsumer.on('end', function () {
-				// write stats, the keys in result.stats are also present in tc.results
-				_.forEach(result.stats, function(val, key) {
-					result.stats[key] += tapConsumer.results[key];
+					// write failedTests
+					result.testsPassed = false;
+					result.failedTests = result.failedTests.concat(
+						_(tapConsumer.results.list).reject('ok').valueOf()
+					);
 				});
 
-				if (tapConsumer.results.ok) return;
-
-				// write failedTests
-				result.testsPassed = false;
-				result.failedTests = result.failedTests.concat(
-					_(tapConsumer.results.list).reject('ok').valueOf()
-				);
-			});
-
-			if(options.outputLevel === 'tap-stream') {
-				tapConsumer.on('data', {
-					file: function(data) { result.tapOutput += data; },
-					console: function(data) { grunt.log.writeln(util.inspect(data)); }
-				}[options.outputTo]);
-			}
+				if (options.outputLevel === 'tap-stream') {
+					tapConsumer.on('data', {
+						file: function (data) {
+							result.tapOutput += data;
+						},
+						console: function (data) {
+							grunt.log.writeln(util.inspect(data));
+						}
+					}[options.outputTo]);
+				}
+			}, cb);
 		}
 
 		function checkOptions() {
@@ -113,7 +111,7 @@ module.exports = function (grunt) {
 					"are: [%s]", options.outputTo, outputDests.join(", ")), exitCodes.fatal);
 			}
 
-			if(options.outputTo === 'file' && !options.outputFilePath) {
+			if (options.outputTo === 'file' && !options.outputFilePath) {
 				return grunt.fail.fatal("The outputFilePath option must be passed when outputting to a file",
 					exitCodes.fatal);
 			}
