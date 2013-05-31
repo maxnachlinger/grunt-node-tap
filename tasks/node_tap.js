@@ -7,7 +7,6 @@ var _ = require('lodash');
 var TapConsumer = require('tap').createConsumer;
 var consts = require('./../lib/consts.js');
 var utils = require('./../lib/utils.js');
-var resultToString = require('./../lib/resultToString.js')();
 
 module.exports = function (grunt) {
 	consts = consts();
@@ -17,6 +16,7 @@ module.exports = function (grunt) {
 		var self = this;
 		var done = this.async();
 		var async = grunt.util.async;
+		var lf = grunt.util.linefeed;
 
 		var options = this.options();
 		grunt.verbose.writeflags(options);
@@ -27,13 +27,7 @@ module.exports = function (grunt) {
 
 		var result = {
 			testsPassed: true,
-			failedTests: [],
-			stats: {
-				failTotal: 0,
-				passTotal: 0,
-				testsTotal: 0
-			},
-			tapOutput: ''
+			fileOutput: ''
 		};
 
 		runTests(onTestsComplete);
@@ -42,17 +36,8 @@ module.exports = function (grunt) {
 			if (err)
 				return grunt.fatal(err, exitCodes.fatal);
 
-			var output;
-			if (resultToString[options.outputLevel])
-				output = resultToString[options.outputLevel](result);
-
-			if (!output)
-				output = result.tapOutput;
-
 			if (options.outputTo === 'file')
-				grunt.file.write(options.outputFilePath, output);
-			else
-				grunt.log.writeln(output);
+				grunt.file.write(options.outputFilePath, result.fileOutput);
 
 			if (!result.testsPassed)
 				return grunt.warn("Some tests failed.");
@@ -63,39 +48,60 @@ module.exports = function (grunt) {
 		function runTests(cb) {
 			async.forEach(foundFiles, function (file, eCb) {
 				var tapConsumer = new TapConsumer();
-				var proc = childProcess('node', [file]);
 
+				var proc = childProcess('node', [file]);
 				proc.stdout.pipe(tapConsumer);
 				proc.stderr.pipe(process.stderr);
+
+				if (options.outputLevel === 'tap-stream')
+					proc.stdout.on('data', sendOutput);
 
 				proc.on('close', eCb);
 
 				tapConsumer.on('end', function () {
-					// write stats, the keys in result.stats are also present in tc.results
-					_.forEach(result.stats, function (val, key) {
-						result.stats[key] += tapConsumer.results[key];
-					});
+					var stats = statsToString(file, tapConsumer.results);
+
+					if (~['stats', 'failures'].indexOf(options.outputLevel))
+						sendOutput(stats);
 
 					if (tapConsumer.results.ok) return;
-
-					// write failedTests
 					result.testsPassed = false;
-					result.failedTests = result.failedTests.concat(
-						_(tapConsumer.results.list).reject('ok').valueOf()
-					);
-				});
 
-				if (options.outputLevel === 'tap-stream') {
-					tapConsumer.on('data', {
-						file: function (data) {
-							result.tapOutput += data;
-						},
-						console: function (data) {
-							grunt.log.writeln(util.inspect(data));
-						}
-					}[options.outputTo]);
-				}
+					if (options.outputLevel === 'failures') {
+						var failedTests = _(tapConsumer.results.list).reject('ok').valueOf();
+						sendOutput(failuresToString(file, failedTests));
+					}
+				});
 			}, cb);
+		}
+
+		function sendOutput(output) {
+			return {
+				console: grunt.log.writeln,
+				file: storeOutputForFile
+			}[options.outputTo](output);
+		}
+
+		function storeOutputForFile(data) {
+			result.fileOutput += data;
+		}
+
+		function statsToString(file, result) {
+			return util.format("Stats: %s: %d/%d", file, result.passTotal, result.testsTotal)
+		}
+
+		function failuresToString(file, failures) {
+			var str = util.format("%sFile:%s%sFailures:%s", lf, file, lf, lf);
+
+			_(failures).forEach(function (resultObj) {
+				resultObj = _.omit(resultObj, 'id', 'ok');
+				_(resultObj).forEach(function (resultValue, resultKey) {
+					str += resultKey + ':' + util.inspect(resultValue) + lf;
+				});
+				str += lf;
+			});
+
+			return str;
 		}
 
 		function checkOptions() {
