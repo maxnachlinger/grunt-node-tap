@@ -1,76 +1,140 @@
 'use strict';
-var node_tap = require('../lib/nodeTap.js');
+var fs = require('fs');
 var path = require('path');
-var utils = require('../lib/utils.js');
 var util = require('util');
+var childProcess = require('child_process').spawn;
 var _ = require('lodash');
-var outputCreator = require('../lib/outputCreator.js');
+var TapConsumer = require('tap').createConsumer;
+var consts = require('./../lib/consts.js');
+var utils = require('./../lib/utils.js');
 
 module.exports = function (grunt) {
-	var exitCodes = {
-		fatal: 1,
-		taskFailed: 3
-	};
+	consts = consts();
+	var exitCodes = consts.exitCodes();
 
 	grunt.registerMultiTask('node_tap', 'A Grunt task to run node-tap tests and read their output.', function () {
 		var self = this;
 		var done = this.async();
+		var async = grunt.util.async;
 		var lf = grunt.util.linefeed;
-		var output = '';
 
 		var options = this.options();
 		grunt.verbose.writeflags(options);
 		checkOptions();
 
-		var foundFiles = gatherFiles();
-		grunt.verbose.writeln("Files to process:", foundFiles);
+		var foundFiles = [];
+		setupFiles();
 
-		if (foundFiles.length === 0)
-			return grunt.fail.fatal("None of the files passed exist.", exitCodes.fatal);
+		var result = {
+			testsPassed: true,
+			fileOutput: ''
+		};
 
-		var nodeTap = node_tap({
-			filePaths: foundFiles
-		}, function (err, result) {
+		runTests(onTestsComplete);
+
+		function onTestsComplete(err) {
 			if (err)
 				return grunt.fatal(err, exitCodes.fatal);
 
-			if(outputCreator[options.outputLevel])
-				output = outputCreator[options.outputLevel](result);
+			if (options.outputTo === 'file')
+				grunt.file.write(options.outputFilePath, result.fileOutput);
 
-			if(options.outputTo === 'file') {
-				grunt.file.write(options.outputTo, output);
-			} else {
-				if (!result.testsPassed)
-					return grunt.warn(output + lf);
+			if (!result.testsPassed)
+				return grunt.warn("Some tests failed.");
 
-				grunt.log.writeln(output);
-			}
 			done();
-		});
+		}
 
-		if(options.outputLevel === 'tap-stream') {
-			nodeTap.on('data', function(data) {
-				if(options.outputTo === 'console')
-					return grunt.log.writeln(util.inspect(data));
+		function runTests(cb) {
+			async.forEach(foundFiles, function (file, eCb) {
+				var tapConsumer = new TapConsumer();
 
-				output += data + lf;
+				var proc = childProcess('node', [file]);
+				proc.stdout.pipe(tapConsumer);
+				proc.stderr.pipe(process.stderr);
+
+				if (options.outputLevel === 'tap-stream')
+					proc.stdout.on('data', sendOutput);
+
+				proc.on('close', eCb);
+
+				tapConsumer.on('end', function () {
+					var stats = statsToString(file, tapConsumer.results);
+
+					if (~['stats', 'failures'].indexOf(options.outputLevel))
+						sendOutput(stats);
+
+					if (tapConsumer.results.ok) return;
+					result.testsPassed = false;
+
+					if (options.outputLevel === 'failures') {
+						var failedTests = _(tapConsumer.results.list).reject('ok').valueOf();
+						sendOutput(failuresToString(file, failedTests));
+					}
+				});
+			}, cb);
+		}
+
+		function sendOutput(output) {
+			return {
+				console: grunt.log.writeln,
+				file: storeOutputForFile
+			}[options.outputTo](output);
+		}
+
+		function storeOutputForFile(data) {
+			result.fileOutput += data;
+		}
+
+		function statsToString(file, result) {
+			return util.format("Stats: %s: %d/%d", file, result.passTotal, result.testsTotal)
+		}
+
+		function failuresToString(file, failures) {
+			var str = util.format("%sFile:%s%sFailures:%s", lf, file, lf, lf);
+
+			_(failures).forEach(function (resultObj) {
+				resultObj = _.omit(resultObj, 'id', 'ok');
+				_(resultObj).forEach(function (resultValue, resultKey) {
+					str += resultKey + ':' + util.inspect(resultValue) + lf;
+				});
+				str += lf;
 			});
+
+			return str;
 		}
 
 		function checkOptions() {
-			var levels = outputCreator.outputLevels;
-			if (!~levels.indexOf(options.outputLevel)) {
+			var outputLevels = consts.outputLevels();
+			if (!~outputLevels.indexOf(options.outputLevel)) {
 				return grunt.fail.fatal(util.format("Invalid outputLevel option [%s] passed, valid outputLevel options " +
-					"are: [%s]", options.outputLevel, levels.join(", ")), exitCodes.fatal);
+					"are: [%s]", options.outputLevel, outputLevels.join(", ")), exitCodes.fatal);
+			}
+
+			var outputDests = consts.outputDestinations();
+			if (!~outputDests.indexOf(options.outputTo)) {
+				return grunt.fail.fatal(util.format("Invalid outputTo option [%s] passed, valid outputTo options " +
+					"are: [%s]", options.outputTo, outputDests.join(", ")), exitCodes.fatal);
+			}
+
+			if (options.outputTo === 'file' && !options.outputFilePath) {
+				return grunt.fail.fatal("The outputFilePath option must be passed when outputting to a file",
+					exitCodes.fatal);
 			}
 		}
 
-		function gatherFiles() {
-			return _(self.filesSrc)
+		function setupFiles() {
+			foundFiles = _(self.filesSrc)
 				.map(utils.unary(grunt.file.expand))
 				.flatten()
+				.map(utils.unary(path.resolve))
 				.filter(utils.unary(grunt.file.exists))
 				.valueOf();
+
+			grunt.verbose.writeln("Files to process:", foundFiles);
+
+			if (foundFiles.length === 0)
+				return grunt.fail.fatal("None of the files passed exist.", exitCodes.fatal);
 		}
 
 	});

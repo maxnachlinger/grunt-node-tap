@@ -42,6 +42,16 @@ module.exports = function (grunt) {
 					'tests': ['./test/data/*.js']
 				}
 			},
+			tap_stream_file: {
+				options: {
+					outputLevel: 'tap-stream',
+					outputTo: 'file',
+					outputFilePath: '/tmp/out.log'
+				},
+				files: {
+					'tests': ['./test/data/*.js']
+				}
+			},
 			test: {
 				options: {
 					outputLevel: 'tap-stream', // failures, stats
@@ -62,4 +72,6 @@ module.exports = function (grunt) {
 	grunt.registerTask('fc', ['node_tap:failures_console']);
 	grunt.registerTask('sc', ['node_tap:stats_console']);
 	grunt.registerTask('tc', ['node_tap:tap_stream_console']);
+	grunt.registerTask('tf', ['node_tap:tap_stream_file']);
+
 };
