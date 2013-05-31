@@ -1,7 +1,7 @@
 "use strict";
 var test = require('tap').test;
 var grunt = require('grunt');
-
+/*
 test("Handles failed node-tap tests", function (t) {
 	givenFilePaths([
 		'./data/mixed.js'
@@ -40,9 +40,21 @@ test("Handles N node-tap test files", function (t) {
 });
 
 function givenFilePaths(paths, cb) {
-	var nodeTap = require('../lib/nodeTap.js');
-	nodeTap({
-		grunt: grunt,
-		filePaths: paths
-	}, cb);
+	grunt.initConfig({
+		node_tap: {
+			options: {
+				outputLevel: 'stats',
+				outputTo: 'console'
+			},
+			files: {
+				'tests': paths
+			}
+		}
+	});
+	grunt.registerMultiTask('node_tap', '', require('../tasks/node_tap.js'));
+	grunt.registerTask('tasks_complete', '', cb);
+	grunt.task.run('node_tap', 'tasks_complete');
+	cb();
 }
+*/
+
