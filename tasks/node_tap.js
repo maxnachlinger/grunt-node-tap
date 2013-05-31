@@ -46,7 +46,7 @@ module.exports = function (grunt) {
 		}
 
 		function runTests(cb) {
-			async.forEach(foundFiles, function (file, eCb) {
+			async.forEachSeries(foundFiles, function (file, eCb) {
 				var tapConsumer = new TapConsumer();
 
 				var proc = childProcess('node', [file]);
@@ -56,10 +56,16 @@ module.exports = function (grunt) {
 				if (options.outputLevel === 'tap-stream')
 					proc.stdout.on('data', sendOutput);
 
-				proc.on('close', eCb);
+				proc.on('close', function () {
+					_.forEach(['close', 'data', 'end', 'error'], proc.removeAllListeners);
+					eCb();
+				});
 
 				tapConsumer.on('end', function () {
-					var stats = statsToString(file, tapConsumer.results);
+					var shortFile = file.replace(process.cwd(), '.');
+					_.forEach(['close', 'data', 'end', 'error'], tapConsumer.removeAllListeners);
+
+					var stats = statsToString(shortFile, tapConsumer.results);
 
 					if (~['stats', 'failures'].indexOf(options.outputLevel))
 						sendOutput(stats);
@@ -69,7 +75,7 @@ module.exports = function (grunt) {
 
 					if (options.outputLevel === 'failures') {
 						var failedTests = _(tapConsumer.results.list).reject('ok').valueOf();
-						sendOutput(failuresToString(file, failedTests));
+						sendOutput(failuresToString(shortFile, failedTests));
 					}
 				});
 			}, cb);
