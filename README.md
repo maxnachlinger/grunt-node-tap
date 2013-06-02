@@ -34,9 +34,9 @@ grunt.initConfig({
 ### Options
 
 #### options.outputType
-Specifies the type of output, the screenshots below might help.
-Default value: `'failures'`
-Allowable values: `'failures', 'stats', 'tap'`
+Specifies the type of output, `'failures'`, `'stats'`, or `'tap'` (default is `'failures'`), 
+the screenshots below might help.
+
 
 #### options.outputType: stats
 ![stats outputMode](https://raw.github.com/maxnachlinger/grunt-node-tap/master/doc/stats.png)
@@ -48,10 +48,10 @@ Allowable values: `'failures', 'stats', 'tap'`
 ![tap outputMode](https://raw.github.com/maxnachlinger/grunt-node-tap/master/doc/tap.png)
 
 #### options.outputTo
-Where to write output. The console or a file.
-Default value: `'console'`
-Allowable values: `'console', 'file'`
+Where to write output, the `'console'` or a `'file'`. Defaults to `'console'`. 
 
 #### options.outputFilePath
-Path to output file, only makes sense if `outputTo` is set to `'file'`
-Default value: `null`
+Path to output file, this defaults to `null` and only makes sense if `outputTo` is set to `'file'`
+
+#### Fun note:
+I imagine an outputType of `'tap'` with an outputTo of `'file'` might make this work with CI software.
