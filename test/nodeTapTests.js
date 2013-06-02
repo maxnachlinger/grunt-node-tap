@@ -43,7 +43,7 @@ function givenFilePaths(paths, cb) {
 	grunt.initConfig({
 		node_tap: {
 			options: {
-				outputLevel: 'stats',
+				outputType: 'stats',
 				outputTo: 'console'
 			},
 			files: {

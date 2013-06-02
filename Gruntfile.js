@@ -17,45 +17,47 @@ module.exports = function (grunt) {
 		node_tap: {
 			failures_console: {
 				options: {
-					outputLevel: 'failures',
-					outputTo: 'console'
+					outputType: 'failures', // tap, failures, stats
+					outputTo: 'console' // or file
+					//outputFilePath: '/tmp/out.log' // path for output file, only makes sense with outputTo 'file'
 				},
 				files: {
-					'tests': ['./test/data/*.js']
+					'tests': ['./test/data/mixed.js']
 				}
 			},
 			stats_console: {
 				options: {
-					outputLevel: 'stats',
+					outputType: 'stats',
 					outputTo: 'console'
 				},
 				files: {
-					'tests': ['./test/data/*.js']
+					'tests': ['./test/data/mixed.js']
 				}
 			},
 			tap_stream_console: {
 				options: {
-					outputLevel: 'tap-stream',
+					outputType: 'tap',
 					outputTo: 'console'
 				},
 				files: {
-					'tests': ['./test/data/*.js']
+					'tests': ['./test/data/mixed.js']
 				}
 			},
 			tap_stream_file: {
 				options: {
-					outputLevel: 'tap-stream',
+					outputType: 'tap',
 					outputTo: 'file',
 					outputFilePath: '/tmp/out.log'
 				},
 				files: {
-					'tests': ['./test/data/*.js']
+					'tests': ['./test/data/mixed.js']
 				}
 			},
 			test: {
 				options: {
-					outputLevel: 'tap-stream', // failures, stats
-					outputTo: 'console' // or file path
+					outputType: 'tap', // tap, failures, stats
+					outputTo: 'console' // or file
+					//outputFilePath: '/tmp/out.log' // path for output file, only makes sense with outputTo 'file'
 				},
 				files: {
 					'tests': ['./test/data/*.js']

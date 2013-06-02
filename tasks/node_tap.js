@@ -53,7 +53,7 @@ module.exports = function (grunt) {
 				proc.stdout.pipe(tapConsumer);
 				proc.stderr.pipe(process.stderr);
 
-				if (options.outputLevel === 'tap-stream')
+				if (options.outputType === 'tap')
 					proc.stdout.on('data', sendOutput);
 
 				proc.on('close', function () {
@@ -67,13 +67,13 @@ module.exports = function (grunt) {
 
 					var stats = statsToString(shortFile, tapConsumer.results);
 
-					if (~['stats', 'failures'].indexOf(options.outputLevel))
+					if (~['stats', 'failures'].indexOf(options.outputType))
 						sendOutput(stats);
 
 					if (tapConsumer.results.ok) return;
 					result.testsPassed = false;
 
-					if (options.outputLevel === 'failures') {
+					if (options.outputType === 'failures') {
 						var failedTests = _(tapConsumer.results.list).reject('ok').valueOf();
 						sendOutput(failuresToString(shortFile, failedTests));
 					}
@@ -111,10 +111,10 @@ module.exports = function (grunt) {
 		}
 
 		function checkOptions() {
-			var outputLevels = consts.outputLevels();
-			if (!~outputLevels.indexOf(options.outputLevel)) {
-				return grunt.fail.fatal(util.format("Invalid outputLevel option [%s] passed, valid outputLevel options " +
-					"are: [%s]", options.outputLevel, outputLevels.join(", ")), exitCodes.fatal);
+			var outputTypes = consts.outputTypes();
+			if (!~outputTypes.indexOf(options.outputType)) {
+				return grunt.fail.fatal(util.format("Invalid outputType option [%s] passed, valid outputType options " +
+					"are: [%s]", options.outputType, outputTypes.join(", ")), exitCodes.fatal);
 			}
 
 			var outputDests = consts.outputDestinations();

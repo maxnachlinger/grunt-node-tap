@@ -18,13 +18,14 @@ grunt.loadNpmTasks('grunt-node-tap');
 grunt.initConfig({
     node_tap: {
       default_options: {
-        options: {
-          outputLevel: 'failures', // failures, stats, tap-stream,
-          outputTo: '/tmp/results.log' // console or file-path
-        },
-        files: {
-          'tests': ['./test/data/*.js']
-        }
+          options: {
+              outputType: 'failures', // tap, failures, stats
+              outputTo: 'console' // or file
+              //outputFilePath: '/tmp/out.log' // path for output file, only makes sense with outputTo 'file'
+          },
+          files: {
+              'tests': ['./test/data/*.js']
+          }
       }
     }
 })
@@ -32,23 +33,25 @@ grunt.initConfig({
 
 ### Options
 
-#### options.outputLevel
-Type: `String`
+#### options.outputType
+Specifies the type of output, the screenshots below might help.
 Default value: `'failures'`
-Allowable values: `'failures', 'stats', 'tap-stream'`
+Allowable values: `'failures', 'stats', 'tap'`
 
-A string value that is used to control the output. Here are some fun screen-shots.
-
-#### options.outputLevel: stats
+#### options.outputType: stats
 ![stats outputMode](https://raw.github.com/maxnachlinger/grunt-node-tap/master/doc/stats.png)
 
-#### options.outputLevel: failures
+#### options.outputType: failures
 ![failures outputMode](https://raw.github.com/maxnachlinger/grunt-node-tap/master/doc/failures.png)
 
-#### options.outputLevel: tap-stream
-![tap-stream outputMode](https://raw.github.com/maxnachlinger/grunt-node-tap/master/doc/tap.png)
+#### options.outputType: tap
+![tap outputMode](https://raw.github.com/maxnachlinger/grunt-node-tap/master/doc/tap.png)
 
 #### options.outputTo
-Type: `String`
+Where to write output. The console or a file.
 Default value: `'console'`
-Allowable values: `'console', 'some/path/toFile.log'`
+Allowable values: `'console', 'file'`
+
+#### options.outputFilePath
+Path to output file, only makes sense if `outputTo` is set to `'file'`
+Default value: `null`
