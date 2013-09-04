@@ -1,4 +1,4 @@
-# grunt-node-tap
+## grunt-node-tap
 [![Build Status](https://travis-ci.org/maxnachlinger/grunt-node-tap.png?branch=master)](https://travis-ci.org/maxnachlinger/grunt-node-tap)
 > Grunt task to run node-tap tests and read their output.
 
@@ -10,7 +10,8 @@ grunt.initConfig({
           options: {
               outputType: 'failures', // tap, failures, stats
               outputTo: 'console' // or file
-              //outputFilePath: '/tmp/out.log' // path for output file, only makes sense with outputTo 'file'
+              // outputFilePath: '/tmp/out.log' // path for output file, 
+              // only makes sense with outputTo 'file'
           },
           files: {
               'tests': ['./test/data/*.js']
