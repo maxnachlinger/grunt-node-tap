@@ -2,18 +2,7 @@
 [![Build Status](https://travis-ci.org/maxnachlinger/grunt-node-tap.png?branch=master)](https://travis-ci.org/maxnachlinger/grunt-node-tap)
 > Grunt task to run node-tap tests and read their output.
 
-## Getting Started
-This plugin requires Grunt `~0.4.1` 
-```shell
-npm install grunt-node-tap --save-dev
-```
-
-One the plugin has been installed, it may be enabled inside your Gruntfile with this line of JavaScript: 
-```js
-grunt.loadNpmTasks('grunt-node-tap');
-```
-
-### Usage Examples
+### Example
 ```js
 grunt.initConfig({
     node_tap: {
@@ -29,6 +18,16 @@ grunt.initConfig({
       }
     }
 })
+```
+
+### Getting Started
+This plugin requires Grunt `~0.4.1` 
+```shell
+npm install grunt-node-tap --save-dev
+```
+One the plugin has been installed, it may be enabled inside your Gruntfile with this line of JavaScript:
+```js
+grunt.loadNpmTasks('grunt-node-tap');
 ```
 
 ### Options
