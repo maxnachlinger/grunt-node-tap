@@ -28,11 +28,11 @@
 		"test": "tap ./test/nodeTapTests.js ./test/utilsTests.js"
 	},
 	"dependencies": {
-		"tap": "~0.4.3",
-		"lodash": "~1.2.1"
+		"tap": "~0.4.4",
+		"lodash": "~2.1.0"
 	},
 	"devDependencies": {
-		"grunt-contrib-jshint": "~0.1.1",
+		"grunt-contrib-jshint": "~0.6.4",
 		"grunt": "~0.4.1"
 	},
 	"peerDependencies": {
