@@ -6,6 +6,19 @@ var nodeTap = require('../lib/nodeTap.js');
 var consts = require('../lib/consts.js');
 var exitCodes = consts.exitCodes();
 
+test("Handles a file with test that throws an error", function (t) {
+	nodeTap({
+		outputType: 'stats',
+		outputTo: 'console',
+		files: [path.resolve(__dirname + '/data/throwsError.js')]
+	}, function(err, res) {
+		t.notOk(err, "No error was returned");
+		t.ok(res, "A result was received: " + util.inspect(res));
+		t.equal(res.exitCode, exitCodes.testsFailed, "The result indicated that a test failed");
+		t.end();
+	});
+});
+
 test("Handles a file with failing node-tap tests", function (t) {
 	nodeTap({
 		outputType: 'stats',
