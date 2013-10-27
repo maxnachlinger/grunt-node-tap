@@ -25,50 +25,50 @@ module.exports = function (grunt) {
 						'./test/*.js'
 					]
 				}
-			}
-		},
-
-		/**
-		 * Some examples
-		 * */
-		failures_console: {
-			options: {
-				outputType: 'failures', // tap, failures, stats
-				outputTo: 'console' // or file
-				//outputFilePath: '/tmp/out.log' // path for output file, only makes sense with outputTo 'file'
 			},
-			files: {
-				'tests': ['./test/data/mixed.js']
-			}
-		},
-		stats_console: {
-			options: {
-				outputType: 'stats',
-				outputTo: 'console'
+			/**
+			 * Some examples
+			 * */
+			failures_console: {
+				options: {
+					outputType: 'failures', // tap, failures, stats
+					outputTo: 'console' // or file
+					//outputFilePath: '/tmp/out.log' // path for output file, only makes sense with outputTo 'file'
+				},
+				files: {
+					'tests': ['./test/data/mixed.js']
+				}
 			},
-			files: {
-				'tests': ['./test/data/mixed.js']
-			}
-		},
-		tap_stream_console: {
-			options: {
-				outputType: 'tap',
-				outputTo: 'console'
+			stats_console: {
+				options: {
+					outputType: 'stats',
+					outputTo: 'console'
+				},
+				files: {
+					'tests': ['./test/data/mixed.js']
+				}
 			},
-			files: {
-				'tests': ['./test/data/mixed.js']
-			}
-		},
-		tap_stream_file: {
-			options: {
-				outputType: 'tap',
-				outputTo: 'file',
-				outputFilePath: '/tmp/out.log'
+			tap_stream_console: {
+				options: {
+					outputType: 'tap',
+					outputTo: 'console'
+				},
+				files: {
+					'tests': ['./test/data/mixed.js']
+				}
 			},
-			files: {
-				'tests': ['./test/data/mixed.js']
+			tap_stream_file: {
+				options: {
+					outputType: 'tap',
+					outputTo: 'file',
+					outputFilePath: '/tmp/out.log'
+				},
+				files: {
+					'tests': ['./test/data/mixed.js']
+				}
 			}
 		}
+
 	});
 
 	grunt.loadTasks('tasks');
