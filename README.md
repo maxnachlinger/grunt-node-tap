@@ -1,6 +1,5 @@
 ## grunt-node-tap
 [![Build Status](https://travis-ci.org/maxnachlinger/grunt-node-tap.png?branch=master)](https://travis-ci.org/maxnachlinger/grunt-node-tap)
-[![Dependencies](https://david-dm.org/username/repo.png)](https://david-dm.org/maxnachlinger/grunt-node-tap.png)
 > Grunt task to run node-tap tests and read their output.
 
 ### Example
