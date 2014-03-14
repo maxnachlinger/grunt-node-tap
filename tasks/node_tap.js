@@ -5,6 +5,7 @@ var utils = require('./../lib/utils.js');
 var consts = require('./../lib/consts.js');
 var exitCodes = consts.exitCodes();
 var nodeTap = require('./../lib/nodeTap.js');
+var tap = require('tap');
 
 module.exports = function (grunt) {
 	grunt.registerMultiTask('node_tap', 'A Grunt task to run node-tap tests and read their output.', function () {
@@ -18,10 +19,7 @@ module.exports = function (grunt) {
 			.filter(utils.unary(grunt.file.exists))
 			.valueOf();
 
-		options.tapPath = _.filter([
-			process.cwd() + "/node_modules/tap/bin/tap.js",
-			path.resolve(__dirname, '../node_modules/tap/bin/tap.js')
-		], utils.unary(grunt.file.exists)).shift() || 'tap'; // assume global tap
+		options.tapPath = require.resolve('tap').replace(/\/lib.+/, '/bin/tap.js');
 
 		grunt.verbose.writeflags(options);
 
