@@ -10,6 +10,7 @@ test("Handles a file with test that throws an error", function (t) {
 	nodeTap({
 		outputType: 'stats',
 		outputTo: 'console',
+		tapPath: path.resolve(__dirname, '../node_modules/tap/bin/tap.js'),
 		files: [path.resolve(__dirname + '/data/throwsError.js')]
 	}, function(err, res) {
 		t.notOk(err, "No error was returned");
@@ -23,6 +24,7 @@ test("Handles a file with failing node-tap tests", function (t) {
 	nodeTap({
 		outputType: 'stats',
 		outputTo: 'console',
+		tapPath: path.resolve(__dirname, '../node_modules/tap/bin/tap.js'),
 		files: [path.resolve(__dirname + '/data/mixed.js')]
 	}, function(err, res) {
 		t.notOk(err, "No error was returned");
@@ -36,6 +38,7 @@ test("Handles a file with passing node-tap tests", function (t) {
 	nodeTap({
 		outputType: 'stats',
 		outputTo: 'console',
+		tapPath: path.resolve(__dirname, '../node_modules/tap/bin/tap.js'),
 		files: [path.resolve(__dirname + '/data/passing.js')]
 	}, function(err, res) {
 		t.notOk(err, "No error was returned");
@@ -49,6 +52,7 @@ test("Handles N node-tap test files", function (t) {
 	nodeTap({
 		outputType: 'stats',
 		outputTo: 'console',
+		tapPath: path.resolve(__dirname, '../node_modules/tap/bin/tap.js'),
 		files: [
 			path.resolve(__dirname + '/data/mixed.js'),
 			path.resolve(__dirname + '/data/passing.js')

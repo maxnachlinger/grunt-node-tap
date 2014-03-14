@@ -18,6 +18,11 @@ module.exports = function (grunt) {
 			.filter(utils.unary(grunt.file.exists))
 			.valueOf();
 
+		options.tapPath = _.filter([
+			process.cwd() + "/node_modules/tap/bin/tap.js",
+			path.resolve(__dirname, '../node_modules/tap/bin/tap.js')
+		], utils.unary(grunt.file.exists)).shift() || 'tap'; // assume global tap
+
 		grunt.verbose.writeflags(options);
 
 		nodeTap(_.omit(options, 'filesSrc'), function(err, res) {
