@@ -5,7 +5,7 @@ var test = require('tap').test;
 var nodeTap = require('../lib/nodeTap.js');
 var consts = require('../lib/consts.js');
 var exitCodes = consts.exitCodes();
-var tapPath = require.resolve('tap').replace(/\/lib.+/, '/bin/tap.js');
+var tapPath = require.resolve('tap').replace(/\/tap\/lib\/.+/, '/tap/bin/tap.js');
 
 test("Handles a file with test that throws an error", function (t) {
 	nodeTap({

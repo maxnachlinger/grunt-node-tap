@@ -19,7 +19,7 @@ module.exports = function (grunt) {
 			.filter(utils.unary(grunt.file.exists))
 			.valueOf();
 
-		options.tapPath = require.resolve('tap').replace(/\/lib.+/, '/bin/tap.js');
+		options.tapPath = require.resolve('tap').replace(/\/tap\/lib\/.+/, '/tap/bin/tap.js');
 
 		grunt.verbose.writeflags(options);
 
