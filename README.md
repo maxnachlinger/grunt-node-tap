@@ -1,8 +1,9 @@
 ## grunt-node-tap
+Grunt task to run node-tap tests and read their output.
+
 [![NPM](https://nodei.co/npm/grunt-node-tap.png)](https://nodei.co/npm/grunt-node-tap/)
 
 [![Build Status](https://travis-ci.org/maxnachlinger/grunt-node-tap.png?branch=master)](https://travis-ci.org/maxnachlinger/grunt-node-tap)
-> Grunt task to run node-tap tests and read their output.
 
 ### Example
 ```js
