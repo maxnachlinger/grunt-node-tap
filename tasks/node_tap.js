@@ -1,4 +1,5 @@
 'use strict';
+var os = require('os');
 var path = require('path');
 var _ = require('lodash');
 var utils = require('./../lib/utils.js');
@@ -20,6 +21,10 @@ module.exports = function (grunt) {
 			.valueOf();
 
 		options.tapPath = require.resolve('tap').replace(/\/tap\/lib\/.+/, '/tap/bin/tap.js');
+
+		// for windows we want the tap executable in node_modules/.bin
+		if(os.platform() === 'win32')
+			options.tapPath = path.resolve(require.resolve('tap').replace(/\\tap\\.+/, '/.bin/tap.cmd'));
 
 		grunt.verbose.writeflags(options);
 
