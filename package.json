@@ -1,7 +1,7 @@
 {
 	"name": "grunt-node-tap",
 	"description": "A Grunt task to run node-tap tests and read their output.",
-	"version": "0.1.57",
+	"version": "0.1.58",
 	"homepage": "https://github.com/maxnachlinger/grunt-node-tap",
 	"author": {
 		"name": "Max Nachlinger",
@@ -23,8 +23,9 @@
 		"test": "tap ./test/nodeTapTests.js ./test/utilsTests.js"
 	},
 	"dependencies": {
+		"lodash": "~2.2.1",
 		"tap": "~0.4.4",
-		"lodash": "~2.2.1"
+		"win-spawn": "^2.0.0"
 	},
 	"devDependencies": {
 		"grunt-contrib-jshint": "~0.7.0",
