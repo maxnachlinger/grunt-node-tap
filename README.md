@@ -58,3 +58,6 @@ Path to output file, this defaults to `null` and only makes sense if `outputTo` 
 
 #### Fun note:
 I imagine an outputType of `'tap'` with an outputTo of `'file'` might make this work with CI software.
+
+## Contributors
+[Here's a list, thanks for your help!](https://github.com/maxnachlinger/grunt-node-tap/graphs/contributors)
