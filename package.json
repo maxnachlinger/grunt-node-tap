@@ -23,7 +23,7 @@
 		"test": "tap ./test/nodeTapTests.js ./test/utilsTests.js"
 	},
 	"dependencies": {
-		"lodash": "~2.2.1",
+		"lodash": "~2.4.1",
 		"tap": "~0.4.4"
 	},
 	"devDependencies": {
